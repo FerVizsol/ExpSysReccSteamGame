@@ -397,10 +397,74 @@ class SistemaRecomendacion(KnowledgeEngine):
                 print("-", juego)
         else:
             print("Lo siento, no hay juegos disponibles con las categorias {}".format(categories))
-    
+    #18
+    @Rule(Fact(min_ram=MATCH.min_ram,min_storage=MATCH.min_storage))
+    def recommendBySpecs(self,min_ram,min_storage):
+        juegos = []
+        for juego in self.baseDatosJuegos():
+            if juego["min_ram"] < min_ram and juego["min_storage"] < min_storage:
+                juegos.append(juego["name"])
+        if juegos:
+            print(f"Te recomendamos los siguientes juegos para una PC de min {min_ram} GB de ram y min {min_storage} GB de almacenamiento:")
+            for juego in juegos:
+                print("-", juego)
+        else:
+            print(f"Ningun juego corre tu tostadora :v")
+    #19
+    @Rule(Fact(min_ram=MATCH.min_ram,min_storage=MATCH.min_storage,price_range=MATCH.price_range))
+    def recommendBySpecsandPrice(self,min_ram,min_storage,price_range):
+        juegos = []
+        for juego in self.baseDatosJuegos():
+            if juego["min_ram"] < min_ram and juego["min_storage"] < min_storage and juego["price_range"] < price_range :
+                juegos.append(juego["name"])
+        if juegos:
+            print(f"Te recomendamos los siguientes juegos para una PC a menos de S./{price_range} de min {min_ram} GB de ram y min {min_storage} GB de almacenamiento:")
+            for juego in juegos:
+                print("-", juego)
+        else:
+            print(f"Ningun juego corre tu tostadora o no te alcanza :v")
+    #20
+    @Rule(Fact(min_ram=MATCH.min_ram,min_storage=MATCH.min_storage,price_range=MATCH.price_range,genres=MATCH.genres))
+    def recommendBySpecsPriceGenres(self,min_ram,min_storage,price_range,genres):
+        juegos = []
+        for juego in self.baseDatosJuegos():
+            if juego["min_ram"] < min_ram and juego["min_storage"] < min_storage and juego["price_range"] < price_range :
+                appendBool=True
+                for item in genres:
+                    if item not in juego["genres"]:
+                        appendBool = False
+                if appendBool:
+                    juegos.append(juego["name"])
+        if juegos:
+            print(f"Te recomendamos los siguientes juegos para una PC a menos de S./{price_range} de min {min_ram} GB de ram y min {min_storage} GB de almacenamiento con los generos {genres}:")
+            for juego in juegos:
+                print("-", juego)
+        else:
+            print(f"Ningun juego corre tu tostadora o no te alcanza :v")
+    #21
+    @Rule(Fact(min_ram=MATCH.min_ram,min_storage=MATCH.min_storage,price_range=MATCH.price_range,genres=MATCH.genres,categories=MATCH.categories))
+    def recommendBySpecsPriceGenres(self,min_ram,min_storage,price_range,genres,categories):
+        juegos = []
+        for juego in self.baseDatosJuegos():
+            if juego["min_ram"] < min_ram and juego["min_storage"] < min_storage and juego["price_range"] < price_range :
+                appendBool=True
+                for item in genres:
+                    if item not in juego["genres"]:
+                        appendBool = False
+                for item in categories:
+                    if item not in juego["categories"]:
+                        appendBool = False
+                if appendBool:
+                    juegos.append(juego["name"])
+        if juegos:
+            print(f"Te recomendamos los siguientes juegos para una PC a menos de S./{price_range} de min {min_ram} GB de ram y min {min_storage} GB de almacenamiento con los generos {genres} y categorias {categories}:")
+            for juego in juegos:
+                print("-", juego)
+        else:
+            print(f"Ningun juego corre tu tostadora o no te alcanza :v")
 sistema = SistemaRecomendacion()
 sistema.reset()
-sistema.declare(Fact(price_range=50))  
+"""sistema.declare(Fact(price_range=50))  
 sistema.declare(Fact(genres=["Single-player","Multiplayer"]))
 sistema.declare(Fact(languages=["Spanish","Italian"]))
 sistema.declare(Fact(singleplayer=False))
@@ -415,4 +479,6 @@ sistema.declare(Fact(min_ram=1))
 sistema.declare(Fact(min_storage=10))
 sistema.declare(Fact(controller_support=False))
 sistema.declare(Fact(categories=["Online PvP","Steam Achievements"]))
+sistema.declare(Fact(min_ram=4,min_storage=20))"""
+sistema.declare(Fact(min_ram=4,min_storage=20,price_range=30,genres=["Zombies","Singleplayer"],categories=["Online PvP"]))
 sistema.run()
