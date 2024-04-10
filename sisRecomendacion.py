@@ -1,5 +1,5 @@
 from experta import * 
-
+import datetime
 class Juego(Fact):
     pass
 
@@ -119,7 +119,7 @@ class SistemaRecomendacion(KnowledgeEngine):
         singleplayer=False, online_multiplayer=True, release_date="2021-05-12", user_rating=6.9, multiplatform=False, achievements=True, steam_workshop=False, in_app_purchases=False, active_community_market=True, remote_play=True,
         languages=["English", "Simplified Chinese", "Traditional Chinese", "Japanese", "Korean", "French", "German", "Spanish - Spain", "Russian", "Turkish", "Portuguese - Portugal", "Vietnamese", "Thai", "Arabic", "Portuguese - Brazil", "Spanish - Latin America"],
         steam_trading_cards=True, min_ram="8GB", min_storage="35GB", controller_support=True)
-
+    #1
     @Rule(Fact(price_range=MATCH.price_range))
     def recommendPrecio(self, price_range):
         juegos_recomendados = []
@@ -132,6 +132,7 @@ class SistemaRecomendacion(KnowledgeEngine):
                 print("-", juego)
         else:
             print("Lo siento, no hay juegos disponibles dentro del rango de precio de S/.{}".format(price_range))
+    #2
     @Rule(Fact(genres=MATCH.genres))
     def recommend_games_by_genre(self, genres):
         juegos_recomendados = []
@@ -139,16 +140,86 @@ class SistemaRecomendacion(KnowledgeEngine):
             for genre in juego["genres"]:
                 if genre in genres:
                     juegos_recomendados.append(juego["name"])
-                    break  # Salir del bucle interno cuando se encuentra un juego del género deseado
+                    break  
         if juegos_recomendados:
             print("Te recomendamos los siguientes juegos con los géneros {}:".format(genres))
             for juego in juegos_recomendados:
                 print("-", juego)
         else:
             print("Lo siento, no hay juegos disponibles con los géneros {}".format(genres))
+    @Rule(Fact(languages=MATCH.languages))
+    def recommend_games_by_language(self, languages):
+        juegos_recomendados = []
+        for juego in self.baseDatosJuegos():
+            for language in juego["languages"]:
+                if language in languages:
+                    juegos_recomendados.append(juego["name"])
+                    break  
+        if juegos_recomendados:
+            print("Te recomendamos los siguientes juegos con los idiomas {}:".format(languages))
+            for juego in juegos_recomendados:
+                print("-", juego)
+        else:
+            print("Lo siento, no hay juegos disponibles con los idiomas {}".format(languages))
+    #3
+    
+    @Rule(Fact(singleplayer=MATCH.singleplayer))
+    def recommend_games_by_singp(self,singleplayer):
+        juegos=[]
+        for juego in self.baseDatosJuegos():
+            if juego["singleplayer"] == singleplayer:
+                juegos.append(juego["name"])
+        if juegos:
+            if(singleplayer):
+                print("Te recomendamos los siguientes juegos con tag Singleplayer:")
+            else:
+                print("Te recomendamos los siguientes juegos sin tag Singleplayer:")
+            for juego in juegos:
+                print("-",juego)
+        else:
+            print("No hay juegos disponibles con el tag Singleplayer")
+    
+    #4
+    @Rule(Fact(online_multiplayer=MATCH.online_multiplayer))
+    def recommend_games_by_mult(self,online_multiplayer):
+        juegos=[]
+        for juego in self.baseDatosJuegos():
+            if juego["online_multiplayer"] == online_multiplayer:
+                juegos.append(juego["name"])
+        if juegos:
+            if (online_multiplayer):
+                print("Te recomendamos los siguientes juegos con tag Multiplayer Online:")
+            else:
+                print("Te recomendamos los siguientes juegos sin tag Multiplayer Online:")
+            for juego in juegos:
+                print("-",juego)
+        else:
+            print("No hay juegos disponibles con el tag Multiplayer Online")
+    #5
+    @Rule(Fact(release_date=MATCH.release_date))
+    def recommendRelease(self,release_date):
+        recomendados =[]
+        lista = str(release_date).split('-')
+        fecha = datetime.date(int(lista[0]),int(lista[1]),int(lista[2]))
+        for juego in self.baseDatosJuegos():
+            lista1 = str(juego["release_date"]).split('-')
+            fechaRelease = datetime.date(int(lista1[0]),int(lista1[1]),int(lista1[2]))
+            if (fechaRelease > fecha):
+                recomendados.append(juego["name"])
+        if (recomendados):
+            print(f"Te recomendamos los siguientes juegos que salieron despues del: {fecha}")
+            for juego in recomendados:
+                print("-",juego)
+        else:
+            print("No hay juegos que hayan salido en una fecha mayor a la ingresada")
 
+    
 sistema = SistemaRecomendacion()
 sistema.reset()
-sistema.declare(Fact(price_range=50))  # Aquí puedes cambiar el rango de precio
+sistema.declare(Fact(price_range=50))  
 sistema.declare(Fact(genres=["Single-player","Multiplayer"]))
+sistema.declare(Fact(languages=["Spanish","Italian"]))
+sistema.declare(Fact(singleplayer=False))
+sistema.declare(Fact(online_multiplayer=True))
+sistema.declare(Fact(release_date="2015-05-10"))
 sistema.run()
