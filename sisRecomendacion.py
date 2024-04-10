@@ -958,6 +958,92 @@ class SistemaRecomendacion(KnowledgeEngine):
                 print("-", juego)
         else:
             print(f"No se encontro juegos con esos filtros")
+    #35
+    @Rule(Fact(year=MATCH.release_date))
+    def KotoshiNoGemu(self,year):
+        juegos =[]
+        date = datetime.date
+        for juego in self.baseDatosJuegos():
+            lista1 = str(juego["release_date"]).split('-')
+            fechaJuego = datetime.date(int(lista1[0]),int(lista1[1]),int(lista1[2]))
+            if fechaJuego.year == year:
+                juegos.append(juego["name"])
+        
+        if juegos:
+            print("Los juegos del año son los siguientes:")
+            for juego in juegos:
+                print("-",juego)
+        else:
+            print("Aun no sacan ni un juego este año")
+
+    #36
+    @Rule(Fact(age=MATCH.age_rating_score))
+    def ESRB10orLower(self,age):
+        juegos=[]
+        for juego in self.baseDatosJuegos():
+            if juego["age_rating_score"] in [0,10]:
+                juegos.append(juego["name"])
+        if juegos:
+            print("Los juegos para menores de 10 años o menos son:")
+            for juego in juegos:
+                print("-",juego)
+        else:
+            print("No hay juegos para ESRB 10 o menos")
+
+    #37
+    @Rule(Fact(age=MATCH.age_rating_score))
+    def ESRB13orLower(self,age):
+        juegos=[]
+        for juego in self.baseDatosJuegos():
+            if juego["age_rating_score"] in [0,10,13]:
+                juegos.append(juego["name"])
+        if juegos:
+            print("Los juegos para menores de 13 años o menos son:")
+            for juego in juegos:
+                print("-",juego)
+        else:
+            print("No hay juegos para ESRB 13 o menos")
+
+    #38
+    @Rule(Fact(age=MATCH.age_rating_score))
+    def ESRB13orLower(self,age):
+        juegos=[]
+        for juego in self.baseDatosJuegos():
+            if juego["age_rating_score"] in [0,10,13]:
+                juegos.append(juego["name"])
+        if juegos:
+            print("Los juegos para menores de 13 años o menos son:")
+            for juego in juegos:
+                print("-",juego)
+        else:
+            print("No hay juegos para ESRB 13 o menos")
+    
+    #39
+    @Rule(Fact(age=MATCH.age_rating_score))
+    def ESRB17orLower(self,age):
+        juegos=[]
+        for juego in self.baseDatosJuegos():
+            if juego["age_rating_score"] in [0,10,13,17]:
+                juegos.append(juego["name"])
+        if juegos:
+            print("Los juegos para menores de 17 años o menos son:")
+            for juego in juegos:
+                print("-",juego)
+        else:
+            print("No hay juegos para ESRB 17 o menos")
+    #40
+    @Rule(Fact(age=MATCH.age_rating_score))
+    def ESRB_MatureOrLower(self,age):
+        juegos=[]
+        for juego in self.baseDatosJuegos():
+            if juego["age_rating_score"] in [0,10,13,17,18]:
+                juegos.append(juego["name"])
+        if juegos:
+            print("Los juegos para mayores de 18 años o menos son:")
+            for juego in juegos:
+                print("-",juego)
+        else:
+            print("No hay juegos para ESRB 18 o menos")
 sistema = SistemaRecomendacion()
 sistema.reset()
 """sistema.declare(Fact(price_range=50))  
