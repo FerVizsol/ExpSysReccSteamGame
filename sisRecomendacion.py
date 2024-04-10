@@ -443,7 +443,7 @@ class SistemaRecomendacion(KnowledgeEngine):
             print(f"Ningun juego corre tu tostadora o no te alcanza :v")
     #21
     @Rule(Fact(min_ram=MATCH.min_ram,min_storage=MATCH.min_storage,price_range=MATCH.price_range,genres=MATCH.genres,categories=MATCH.categories))
-    def recommendBySpecsPriceGenres(self,min_ram,min_storage,price_range,genres,categories):
+    def recommendBySpecsPriceGenresCategories(self,min_ram,min_storage,price_range,genres,categories):
         juegos = []
         for juego in self.baseDatosJuegos():
             if juego["min_ram"] < min_ram and juego["min_storage"] < min_storage and juego["price_range"] < price_range :
@@ -462,6 +462,379 @@ class SistemaRecomendacion(KnowledgeEngine):
                 print("-", juego)
         else:
             print(f"Ningun juego corre tu tostadora o no te alcanza :v")
+    #22
+    @Rule(Fact(min_ram=MATCH.min_ram,min_storage=MATCH.min_storage,price_range=MATCH.price_range,genres=MATCH.genres,categories=MATCH.categories,singleplayer=MATCH.singleplayer))
+    def recommendBySpecsPriceGenresCategoriesSingp(self,min_ram,min_storage,price_range,genres,categories,singleplayer):
+        juegos = []
+        for juego in self.baseDatosJuegos():
+            if juego["min_ram"] < min_ram and juego["min_storage"] < min_storage and juego["price_range"] < price_range and juego["singleplayer"] == singleplayer :
+                appendBool=True
+                for item in genres:
+                    if item not in juego["genres"]:
+                        appendBool = False
+                for item in categories:
+                    if item not in juego["categories"]:
+                        appendBool = False
+                if appendBool:
+                    juegos.append(juego["name"])
+        if juegos:
+            print(f"Te recomendamos los siguientes juegos para una PC a menos de S./{price_range} de min {min_ram} GB de ram y min {min_storage} GB de almacenamiento con los generos {genres} y categorias {categories}:")
+            for juego in juegos:
+                print("-", juego)
+        else:
+            print(f"No se encontro juegos con esos filtros")
+    #23
+    @Rule(Fact(min_ram=MATCH.min_ram,min_storage=MATCH.min_storage,price_range=MATCH.price_range,genres=MATCH.genres,categories=MATCH.categories,singleplayer=MATCH.singleplayer,online_multiplayer=MATCH.online_multiplayer))
+    def recommendBySpecsPriceGenresCategoriesSingpMultp(self,min_ram,min_storage,price_range,genres,categories,singleplayer,online_multiplayer):
+        juegos = []
+        for juego in self.baseDatosJuegos():
+            if juego["min_ram"] < min_ram and juego["min_storage"] < min_storage and juego["price_range"] < price_range and juego["singleplayer"] == singleplayer and juego["online_multiplayer"] == online_multiplayer :
+                appendBool=True
+                for item in genres:
+                    if item not in juego["genres"]:
+                        appendBool = False
+                for item in categories:
+                    if item not in juego["categories"]:
+                        appendBool = False
+                if appendBool:
+                    juegos.append(juego["name"])
+        if juegos:
+            print(f"Te recomendamos los siguientes juegos para una PC a menos de S./{price_range} de min {min_ram} GB de ram y min {min_storage} GB de almacenamiento con los generos {genres} y categorias {categories}:")
+            for juego in juegos:
+                print("-", juego)
+        else:
+            print(f"No se encontro juegos con esos filtros")
+    #24
+    @Rule(Fact(min_ram=MATCH.min_ram,min_storage=MATCH.min_storage,price_range=MATCH.price_range,genres=MATCH.genres,categories=MATCH.categories,singleplayer=MATCH.singleplayer,online_multiplayer=MATCH.online_multiplayer,release_date=MATCH.release_date))
+    def recommendBySpecsPriceGenresCategoriesSingpMultpReleaseDate(self,min_ram,min_storage,price_range,genres,categories,singleplayer,online_multiplayer,release_date):
+        juegos = []
+        lista = str(release_date).split('-')
+        fechaRelease = datetime.date(int(lista[0]),int(lista[1]),int(lista[2]))
+        for juego in self.baseDatosJuegos():
+            lista1 = str(juego["release_date"]).split('-')
+            fechaJuego = datetime.date(int(lista1[0]),int(lista1[1]),int(lista1[2]))
+            if juego["min_ram"] < min_ram and juego["min_storage"] < min_storage and juego["price_range"] < price_range and juego["singleplayer"] == singleplayer and juego["online_multiplayer"] == online_multiplayer and fechaRelease < fechaJuego :
+                appendBool=True
+                for item in genres:
+                    if item not in juego["genres"]:
+                        appendBool = False
+                for item in categories:
+                    if item not in juego["categories"]:
+                        appendBool = False
+                if appendBool:
+                    juegos.append(juego["name"])
+        if juegos:
+            print(f"Te recomendamos los siguientes juegos:")
+            for juego in juegos:
+                print("-", juego)
+        else:
+            print(f"No se encontro juegos con esos filtros")
+    #25
+    @Rule(Fact(min_ram=MATCH.min_ram,min_storage=MATCH.min_storage,price_range=MATCH.price_range,genres=MATCH.genres,categories=MATCH.categories,singleplayer=MATCH.singleplayer,online_multiplayer=MATCH.online_multiplayer,release_date=MATCH.release_date,user_rating=MATCH.user_rating))
+    def recommendBySpecsPriceGenresCategoriesSingpMultpReleaseDateUserRate(self,min_ram,min_storage,price_range,genres,categories,singleplayer,online_multiplayer,release_date,user_rating):
+        juegos = []
+        lista = str(release_date).split('-')
+        fechaRelease = datetime.date(int(lista[0]),int(lista[1]),int(lista[2]))
+        for juego in self.baseDatosJuegos():
+            lista1 = str(juego["release_date"]).split('-')
+            fechaJuego = datetime.date(int(lista1[0]),int(lista1[1]),int(lista1[2]))
+            if juego["min_ram"] < min_ram and juego["min_storage"] < min_storage and juego["price_range"] < price_range and juego["singleplayer"] == singleplayer and juego["online_multiplayer"] == online_multiplayer and fechaRelease < fechaJuego and juego["user_rating"] > user_rating :
+                appendBool=True
+                for item in genres:
+                    if item not in juego["genres"]:
+                        appendBool = False
+                for item in categories:
+                    if item not in juego["categories"]:
+                        appendBool = False
+                if appendBool:
+                    juegos.append(juego["name"])
+        if juegos:
+            print(f"Te recomendamos los siguientes juegos:")
+            for juego in juegos:
+                print("-", juego)
+        else:
+            print(f"No se encontro juegos con esos filtros")
+    #26
+    @Rule(Fact(min_ram=MATCH.min_ram,min_storage=MATCH.min_storage,price_range=MATCH.price_range,genres=MATCH.genres,categories=MATCH.categories,singleplayer=MATCH.singleplayer,
+               online_multiplayer=MATCH.online_multiplayer,
+               release_date=MATCH.release_date,user_rating=MATCH.user_rating,
+               multiplatform=MATCH.multiplatform))
+    def recommendBySpecsPriceGenresCategoriesSingpMultpReleaseDateUserRateMultPlat(self,min_ram,min_storage,price_range,genres,categories,singleplayer,online_multiplayer,release_date,user_rating,multiplatform):
+        juegos = []
+        lista = str(release_date).split('-')
+        fechaRelease = datetime.date(int(lista[0]),int(lista[1]),int(lista[2]))
+        for juego in self.baseDatosJuegos():
+            lista1 = str(juego["release_date"]).split('-')
+            fechaJuego = datetime.date(int(lista1[0]),int(lista1[1]),int(lista1[2]))
+            if juego["min_ram"] < min_ram and juego["min_storage"] < min_storage and juego["price_range"] < price_range and juego["singleplayer"] == singleplayer and juego["online_multiplayer"] == online_multiplayer and fechaRelease < fechaJuego and juego["user_rating"] > user_rating and juego["multiplatform"] == multiplatform:
+                appendBool=True
+                for item in genres:
+                    if item not in juego["genres"]:
+                        appendBool = False
+                for item in categories:
+                    if item not in juego["categories"]:
+                        appendBool = False
+                if appendBool:
+                    juegos.append(juego["name"])
+        if juegos:
+            print(f"Te recomendamos los siguientes juegos:")
+            for juego in juegos:
+                print("-", juego)
+        else:
+            print(f"No se encontro juegos con esos filtros")
+
+    #27
+    @Rule(Fact(min_ram=MATCH.min_ram,min_storage=MATCH.min_storage,price_range=MATCH.price_range,genres=MATCH.genres,categories=MATCH.categories,singleplayer=MATCH.singleplayer,
+               online_multiplayer=MATCH.online_multiplayer,
+               release_date=MATCH.release_date,user_rating=MATCH.user_rating,
+               multiplatform=MATCH.multiplatform,achievements=MATCH.achievements))
+    def recommendBySpecsPriceGenresCategoriesSingpMultpReleaseDateUserRateMultPlatAchievements(self,min_ram,min_storage,price_range,genres,categories,singleplayer,online_multiplayer,release_date,user_rating,multiplatform,achievements):
+        juegos = []
+        lista = str(release_date).split('-')
+        fechaRelease = datetime.date(int(lista[0]),int(lista[1]),int(lista[2]))
+        for juego in self.baseDatosJuegos():
+            lista1 = str(juego["release_date"]).split('-')
+            fechaJuego = datetime.date(int(lista1[0]),int(lista1[1]),int(lista1[2]))
+            if juego["min_ram"] < min_ram and juego["min_storage"] < min_storage and juego["price_range"] < price_range and juego["singleplayer"] == singleplayer and juego["online_multiplayer"] == online_multiplayer and fechaRelease < fechaJuego and juego["user_rating"] > user_rating and juego["multiplatform"] == multiplatform and juego["achievements"] == achievements:
+                appendBool=True
+                for item in genres:
+                    if item not in juego["genres"]:
+                        appendBool = False
+                for item in categories:
+                    if item not in juego["categories"]:
+                        appendBool = False
+                if appendBool:
+                    juegos.append(juego["name"])
+        if juegos:
+            print(f"Te recomendamos los siguientes juegos:")
+            for juego in juegos:
+                print("-", juego)
+        else:
+            print(f"No se encontro juegos con esos filtros")
+
+    #28
+    @Rule(Fact(min_ram=MATCH.min_ram,min_storage=MATCH.min_storage,price_range=MATCH.price_range,genres=MATCH.genres,categories=MATCH.categories,singleplayer=MATCH.singleplayer,
+               online_multiplayer=MATCH.online_multiplayer,
+               release_date=MATCH.release_date,user_rating=MATCH.user_rating,
+               multiplatform=MATCH.multiplatform,achievements=MATCH.achievements,
+               steam_workshop=MATCH.steam_workshop))
+    def recommendBySpecsPriceGenresCategoriesSingpMultpReleaseDateUserRateMultPlatAchievementsWorkShop(self,min_ram,min_storage,price_range,genres,categories,singleplayer,online_multiplayer,release_date,user_rating,multiplatform,achievements,steam_workshop):
+        juegos = []
+        lista = str(release_date).split('-')
+        fechaRelease = datetime.date(int(lista[0]),int(lista[1]),int(lista[2]))
+        for juego in self.baseDatosJuegos():
+            lista1 = str(juego["release_date"]).split('-')
+            fechaJuego = datetime.date(int(lista1[0]),int(lista1[1]),int(lista1[2]))
+            if juego["min_ram"] < min_ram and juego["min_storage"] < min_storage and juego["price_range"] < price_range and juego["singleplayer"] == singleplayer and juego["online_multiplayer"] == online_multiplayer and fechaRelease < fechaJuego and juego["user_rating"] > user_rating and juego["multiplatform"] == multiplatform and juego["achievements"] == achievements and juego["steam_workshop"] == steam_workshop:
+                appendBool=True
+                for item in genres:
+                    if item not in juego["genres"]:
+                        appendBool = False
+                for item in categories:
+                    if item not in juego["categories"]:
+                        appendBool = False
+                if appendBool:
+                    juegos.append(juego["name"])
+        if juegos:
+            print(f"Te recomendamos los siguientes juegos:")
+            for juego in juegos:
+                print("-", juego)
+        else:
+            print(f"No se encontro juegos con esos filtros")
+    #29
+    @Rule(Fact(min_ram=MATCH.min_ram,min_storage=MATCH.min_storage,price_range=MATCH.price_range,genres=MATCH.genres,categories=MATCH.categories,singleplayer=MATCH.singleplayer,
+               online_multiplayer=MATCH.online_multiplayer,
+               release_date=MATCH.release_date,user_rating=MATCH.user_rating,
+               multiplatform=MATCH.multiplatform,achievements=MATCH.achievements,
+               steam_workshop=MATCH.steam_workshop,in_app_purchases=MATCH.in_app_purchases))
+    def recommendBySpecsPriceGenresCategoriesSingpMultpReleaseDateUserRateMultPlatAchievementsWorkShopAppPurchases(self,min_ram,min_storage,price_range,genres,categories,singleplayer,online_multiplayer,release_date,user_rating,multiplatform,achievements,steam_workshop,in_app_purchases):
+        juegos = []
+        lista = str(release_date).split('-')
+        fechaRelease = datetime.date(int(lista[0]),int(lista[1]),int(lista[2]))
+        for juego in self.baseDatosJuegos():
+            lista1 = str(juego["release_date"]).split('-')
+            fechaJuego = datetime.date(int(lista1[0]),int(lista1[1]),int(lista1[2]))
+            if juego["min_ram"] < min_ram and juego["min_storage"] < min_storage and juego["price_range"] < price_range and juego["singleplayer"] == singleplayer and juego["online_multiplayer"] == online_multiplayer and fechaRelease < fechaJuego and juego["user_rating"] > user_rating and juego["multiplatform"] == multiplatform and juego["achievements"] == achievements and juego["steam_workshop"] == steam_workshop and juego["in_app_purchases"] == in_app_purchases:
+                appendBool=True
+                for item in genres:
+                    if item not in juego["genres"]:
+                        appendBool = False
+                for item in categories:
+                    if item not in juego["categories"]:
+                        appendBool = False
+                if appendBool:
+                    juegos.append(juego["name"])
+        if juegos:
+            print(f"Te recomendamos los siguientes juegos:")
+            for juego in juegos:
+                print("-", juego)
+        else:
+            print(f"No se encontro juegos con esos filtros")
+    #30
+    @Rule(Fact(min_ram=MATCH.min_ram,min_storage=MATCH.min_storage,price_range=MATCH.price_range,genres=MATCH.genres,categories=MATCH.categories,singleplayer=MATCH.singleplayer,
+               online_multiplayer=MATCH.online_multiplayer,
+               release_date=MATCH.release_date,user_rating=MATCH.user_rating,
+               multiplatform=MATCH.multiplatform,achievements=MATCH.achievements,
+               steam_workshop=MATCH.steam_workshop,in_app_purchases=MATCH.in_app_purchases,
+               active_community_market=MATCH.active_community_market))
+    def recommendBySpecsPriceGenresCategoriesSingpMultpReleaseDateUserRateMultPlatAchievementsWorkShopAppPurchases(self,min_ram,min_storage,price_range,genres,categories,singleplayer,online_multiplayer,release_date,user_rating,multiplatform,achievements,steam_workshop,in_app_purchases,active_community_market):
+        juegos = []
+        lista = str(release_date).split('-')
+        fechaRelease = datetime.date(int(lista[0]),int(lista[1]),int(lista[2]))
+        for juego in self.baseDatosJuegos():
+            lista1 = str(juego["release_date"]).split('-')
+            fechaJuego = datetime.date(int(lista1[0]),int(lista1[1]),int(lista1[2]))
+            if juego["min_ram"] < min_ram and juego["min_storage"] < min_storage and juego["price_range"] < price_range and juego["singleplayer"] == singleplayer and juego["online_multiplayer"] == online_multiplayer and fechaRelease < fechaJuego and juego["user_rating"] > user_rating and juego["multiplatform"] == multiplatform and juego["achievements"] == achievements and juego["steam_workshop"] == steam_workshop and juego["in_app_purchases"] == in_app_purchases and juego["active_community_market"] == active_community_market:
+                appendBool=True
+                for item in genres:
+                    if item not in juego["genres"]:
+                        appendBool = False
+                for item in categories:
+                    if item not in juego["categories"]:
+                        appendBool = False
+                if appendBool:
+                    juegos.append(juego["name"])
+        if juegos:
+            print(f"Te recomendamos los siguientes juegos:")
+            for juego in juegos:
+                print("-", juego)
+        else:
+            print(f"No se encontro juegos con esos filtros")
+    #31
+    @Rule(Fact(min_ram=MATCH.min_ram,min_storage=MATCH.min_storage,price_range=MATCH.price_range,genres=MATCH.genres,categories=MATCH.categories,singleplayer=MATCH.singleplayer,
+               online_multiplayer=MATCH.online_multiplayer,
+               release_date=MATCH.release_date,user_rating=MATCH.user_rating,
+               multiplatform=MATCH.multiplatform,achievements=MATCH.achievements,
+               steam_workshop=MATCH.steam_workshop,in_app_purchases=MATCH.in_app_purchases,
+               active_community_market=MATCH.active_community_market, remote_play=MATCH.remote_play))
+    def recommendBySpecsPriceGenresCategoriesSingpMultpReleaseDateUserRateMultPlatAchievementsWorkShopAppPurchasesRemote_play(self,min_ram,min_storage,price_range,genres,categories,singleplayer,online_multiplayer,release_date,user_rating,multiplatform,achievements,steam_workshop,in_app_purchases,active_community_market,remote_play):
+        juegos = []
+        lista = str(release_date).split('-')
+        fechaRelease = datetime.date(int(lista[0]),int(lista[1]),int(lista[2]))
+        for juego in self.baseDatosJuegos():
+            lista1 = str(juego["release_date"]).split('-')
+            fechaJuego = datetime.date(int(lista1[0]),int(lista1[1]),int(lista1[2]))
+            if juego["min_ram"] < min_ram and juego["min_storage"] < min_storage and juego["price_range"] < price_range and juego["singleplayer"] == singleplayer and juego["online_multiplayer"] == online_multiplayer and fechaRelease < fechaJuego and juego["user_rating"] > user_rating and juego["multiplatform"] == multiplatform and juego["achievements"] == achievements and juego["steam_workshop"] == steam_workshop and juego["in_app_purchases"] == in_app_purchases and juego["active_community_market"] == active_community_market and juego["remote_play"] == remote_play:
+                appendBool=True
+                for item in genres:
+                    if item not in juego["genres"]:
+                        appendBool = False
+                for item in categories:
+                    if item not in juego["categories"]:
+                        appendBool = False
+                if appendBool:
+                    juegos.append(juego["name"])
+        if juegos:
+            print(f"Te recomendamos los siguientes juegos:")
+            for juego in juegos:
+                print("-", juego)
+        else:
+            print(f"No se encontro juegos con esos filtros")
+    #32
+    @Rule(Fact(min_ram=MATCH.min_ram,min_storage=MATCH.min_storage,price_range=MATCH.price_range,genres=MATCH.genres,categories=MATCH.categories,singleplayer=MATCH.singleplayer,
+               online_multiplayer=MATCH.online_multiplayer,
+               release_date=MATCH.release_date,user_rating=MATCH.user_rating,
+               multiplatform=MATCH.multiplatform,achievements=MATCH.achievements,
+               steam_workshop=MATCH.steam_workshop,in_app_purchases=MATCH.in_app_purchases,
+               active_community_market=MATCH.active_community_market, remote_play=MATCH.remote_play,
+               languages=MATCH.languages))
+    def recommendBySpecsPriceGenresCategoriesSingpMultpReleaseDateUserRateMultPlatAchievementsWorkShopAppPurchasesRemote_playLanguages(self,min_ram,min_storage,price_range,genres,categories,singleplayer,online_multiplayer,release_date,user_rating,multiplatform,achievements,steam_workshop,in_app_purchases,active_community_market,remote_play,languages):
+        juegos = []
+        lista = str(release_date).split('-')
+        fechaRelease = datetime.date(int(lista[0]),int(lista[1]),int(lista[2]))
+        for juego in self.baseDatosJuegos():
+            lista1 = str(juego["release_date"]).split('-')
+            fechaJuego = datetime.date(int(lista1[0]),int(lista1[1]),int(lista1[2]))
+            if juego["min_ram"] < min_ram and juego["min_storage"] < min_storage and juego["price_range"] < price_range and juego["singleplayer"] == singleplayer and juego["online_multiplayer"] == online_multiplayer and fechaRelease < fechaJuego and juego["user_rating"] > user_rating and juego["multiplatform"] == multiplatform and juego["achievements"] == achievements and juego["steam_workshop"] == steam_workshop and juego["in_app_purchases"] == in_app_purchases and juego["active_community_market"] == active_community_market and juego["remote_play"] == remote_play:
+                appendBool=True
+                for item in genres:
+                    if item not in juego["genres"]:
+                        appendBool = False
+                for item in categories:
+                    if item not in juego["categories"]:
+                        appendBool = False
+                for item in languages:
+                    if item not in juego["languages"]:
+                        appendBool = False
+                if appendBool:
+                    juegos.append(juego["name"])
+        if juegos:
+            print(f"Te recomendamos los siguientes juegos:")
+            for juego in juegos:
+                print("-", juego)
+        else:
+            print(f"No se encontro juegos con esos filtros")
+    
+    #33
+    @Rule(Fact(min_ram=MATCH.min_ram,min_storage=MATCH.min_storage,price_range=MATCH.price_range,genres=MATCH.genres,categories=MATCH.categories,singleplayer=MATCH.singleplayer,
+               online_multiplayer=MATCH.online_multiplayer,
+               release_date=MATCH.release_date,user_rating=MATCH.user_rating,
+               multiplatform=MATCH.multiplatform,achievements=MATCH.achievements,
+               steam_workshop=MATCH.steam_workshop,in_app_purchases=MATCH.in_app_purchases,
+               active_community_market=MATCH.active_community_market, remote_play=MATCH.remote_play,
+               languages=MATCH.languages,steam_trading_cards=MATCH.steam_trading_cards))
+    def recommendBySpecsPriceGenresCategoriesSingpMultpReleaseDateUserRateMultPlatAchievementsWorkShopAppPurchasesRemote_playLanguagesTrading(self,min_ram,min_storage,price_range,genres,categories,singleplayer,online_multiplayer,release_date,user_rating,multiplatform,achievements,steam_workshop,in_app_purchases,active_community_market,remote_play,languages,steam_trading_cards):
+        juegos = []
+        lista = str(release_date).split('-')
+        fechaRelease = datetime.date(int(lista[0]),int(lista[1]),int(lista[2]))
+        for juego in self.baseDatosJuegos():
+            lista1 = str(juego["release_date"]).split('-')
+            fechaJuego = datetime.date(int(lista1[0]),int(lista1[1]),int(lista1[2]))
+            if juego["min_ram"] < min_ram and juego["min_storage"] < min_storage and juego["price_range"] < price_range and juego["singleplayer"] == singleplayer and juego["online_multiplayer"] == online_multiplayer and fechaRelease < fechaJuego and juego["user_rating"] > user_rating and juego["multiplatform"] == multiplatform and juego["achievements"] == achievements and juego["steam_workshop"] == steam_workshop and juego["in_app_purchases"] == in_app_purchases and juego["active_community_market"] == active_community_market and juego["remote_play"] == remote_play and juego["steam_trading_cards"] == steam_trading_cards:
+                appendBool=True
+                for item in genres:
+                    if item not in juego["genres"]:
+                        appendBool = False
+                for item in categories:
+                    if item not in juego["categories"]:
+                        appendBool = False
+                for item in languages:
+                    if item not in juego["languages"]:
+                        appendBool = False
+                if appendBool:
+                    juegos.append(juego["name"])
+        if juegos:
+            print(f"Te recomendamos los siguientes juegos:")
+            for juego in juegos:
+                print("-", juego)
+        else:
+            print(f"No se encontro juegos con esos filtros")
+    
+    #34
+    @Rule(Fact(min_ram=MATCH.min_ram,min_storage=MATCH.min_storage,price_range=MATCH.price_range,genres=MATCH.genres,categories=MATCH.categories,singleplayer=MATCH.singleplayer,
+               online_multiplayer=MATCH.online_multiplayer,
+               release_date=MATCH.release_date,user_rating=MATCH.user_rating,
+               multiplatform=MATCH.multiplatform,achievements=MATCH.achievements,
+               steam_workshop=MATCH.steam_workshop,in_app_purchases=MATCH.in_app_purchases,
+               active_community_market=MATCH.active_community_market, remote_play=MATCH.remote_play,
+               languages=MATCH.languages,steam_trading_cards=MATCH.steam_trading_cards,
+               controller_support=MATCH.controller_support))
+    def recommendBySpecsPriceGenresCategoriesSingpMultpReleaseDateUserRateMultPlatAchievementsWorkShopAppPurchasesRemote_playLanguagesTrading(self,min_ram,min_storage,price_range,genres,categories,singleplayer,online_multiplayer,release_date,user_rating,multiplatform,achievements,steam_workshop,in_app_purchases,active_community_market,remote_play,languages,steam_trading_cards,controller_support):
+        juegos = []
+        lista = str(release_date).split('-')
+        fechaRelease = datetime.date(int(lista[0]),int(lista[1]),int(lista[2]))
+        for juego in self.baseDatosJuegos():
+            lista1 = str(juego["release_date"]).split('-')
+            fechaJuego = datetime.date(int(lista1[0]),int(lista1[1]),int(lista1[2]))
+            if juego["min_ram"] < min_ram and juego["min_storage"] < min_storage and juego["price_range"] < price_range and juego["singleplayer"] == singleplayer and juego["online_multiplayer"] == online_multiplayer and fechaRelease < fechaJuego and juego["user_rating"] > user_rating and juego["multiplatform"] == multiplatform and juego["achievements"] == achievements and juego["steam_workshop"] == steam_workshop and juego["in_app_purchases"] == in_app_purchases and juego["active_community_market"] == active_community_market and juego["remote_play"] == remote_play and juego["steam_trading_cards"] == steam_trading_cards and juego["controller_support"] == controller_support:
+                appendBool=True
+                for item in genres:
+                    if item not in juego["genres"]:
+                        appendBool = False
+                for item in categories:
+                    if item not in juego["categories"]:
+                        appendBool = False
+                for item in languages:
+                    if item not in juego["languages"]:
+                        appendBool = False
+                if appendBool:
+                    juegos.append(juego["name"])
+        if juegos:
+            print(f"Te recomendamos los siguientes juegos:")
+            for juego in juegos:
+                print("-", juego)
+        else:
+            print(f"No se encontro juegos con esos filtros")
 sistema = SistemaRecomendacion()
 sistema.reset()
 """sistema.declare(Fact(price_range=50))  
