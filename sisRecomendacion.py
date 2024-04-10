@@ -3,9 +3,11 @@ from experta import *
 class Juego(Fact):
     pass
 
+
 class SistemaRecomendacion(KnowledgeEngine):
     @DefFacts()
     def baseDatosJuegos(self):
+        
         yield Juego(name="Left 4 Dead 2", price_range=23.00,
         genres=["Zombies", "Co-op", "FPS", "Multiplayer", "Shooter", "Online Co-Op", "Action", "Survival", "Horror", "First-Person", "Gore", "Team-Based", "Moddable", "Survival Horror", "Post-apocalyptic", "Singleplayer", "Adventure", "Local Co-Op", "Replay Value", "Tactical"],
         categories=["Single-player", "Online PvP", "Online Co-op", "Steam Achievements", "Steam Trading Cards", "Captions available", "Steam Workshop", "Steam Cloud", "Valve Anti-Cheat enabled", "Stats", "Includes Source SDK", "Commentary available", "Remote Play on Phone", "Remote Play on Tablet", "Remote Play on TV", "Remote Play Together", "Family Sharing", "Co-op", "Multi-player", "HDR rendering", "Full Controller Support", "Native Steam Controller", "PvP", "Cloud Gaming", "Cloud Gaming (NVIDIA)"],
@@ -118,4 +120,35 @@ class SistemaRecomendacion(KnowledgeEngine):
         languages=["English", "Simplified Chinese", "Traditional Chinese", "Japanese", "Korean", "French", "German", "Spanish - Spain", "Russian", "Turkish", "Portuguese - Portugal", "Vietnamese", "Thai", "Arabic", "Portuguese - Brazil", "Spanish - Latin America"],
         steam_trading_cards=True, min_ram="8GB", min_storage="35GB", controller_support=True)
 
+    @Rule(Fact(price_range=MATCH.price_range))
+    def recommendPrecio(self, price_range):
+        juegos_recomendados = []
+        for juego in self.baseDatosJuegos():
+            if juego["price_range"] <= price_range:
+                juegos_recomendados.append(juego["name"])
+        if juegos_recomendados:
+            print("Te recomendamos los siguientes juegos dentro del rango de precio de S/.{}:".format(price_range))
+            for juego in juegos_recomendados:
+                print("-", juego)
+        else:
+            print("Lo siento, no hay juegos disponibles dentro del rango de precio de S/.{}".format(price_range))
+    @Rule(Fact(genres=MATCH.genres))
+    def recommend_games_by_genre(self, genres):
+        juegos_recomendados = []
+        for juego in self.baseDatosJuegos():
+            for genre in juego["genres"]:
+                if genre in genres:
+                    juegos_recomendados.append(juego["name"])
+                    break  # Salir del bucle interno cuando se encuentra un juego del género deseado
+        if juegos_recomendados:
+            print("Te recomendamos los siguientes juegos con los géneros {}:".format(genres))
+            for juego in juegos_recomendados:
+                print("-", juego)
+        else:
+            print("Lo siento, no hay juegos disponibles con los géneros {}".format(genres))
 
+sistema = SistemaRecomendacion()
+sistema.reset()
+sistema.declare(Fact(price_range=50))  # Aquí puedes cambiar el rango de precio
+sistema.declare(Fact(genres=["Single-player","Multiplayer"]))
+sistema.run()
