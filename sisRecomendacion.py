@@ -337,6 +337,50 @@ class SistemaRecomendacion(KnowledgeEngine):
                 print("-",juego)
         else:
             print("No hay juegos disponibles con Cromos de Steam:")
+    #14
+    @Rule(Fact(min_ram=MATCH.min_ram))
+    def recommendByMinRam(self,min_ram):
+        juegos=[]
+        for juego in self.baseDatosJuegos():
+            if juego["min_ram"] < min_ram:
+                juegos.append(juego["name"])
+        if juegos:
+            print(f"Estos son los juegos que puedes jugar con menos de {min_ram} GB de RAM")
+            for juego in juegos:
+                print("-",juego)
+        else:
+            print(f"No existen juegos con los que puedas jugar con menos de {min_ram} GB de RAM")
+    
+    #15
+    @Rule(Fact(min_storage=MATCH.min_storage))
+    def recommendByMinAlmacenamiento(self,min_storage):
+        juegos=[]
+        for juego in self.baseDatosJuegos():
+            if juego["min_storage"] < min_storage:
+                juegos.append(juego["name"])
+        if juegos:
+            print(f"Estos son los juegos que puedes jugar con menos de {min_storage} GB de Almacenamiento:")
+            for juego in juegos:
+                print("-",juego)
+        else:
+            print(f"No existen juegos con los que puedas jugar con menos de {min_storage} GB de Almacenamiento.")
+    #16
+    @Rule(Fact(controller_support=MATCH.controller_support))
+    def recommend_games_by_controlSupp(self,controller_support):
+        juegos=[]
+        for juego in self.baseDatosJuegos():
+            if juego["controller_support"] == controller_support:
+                juegos.append(juego["name"])
+        if juegos:
+            if(controller_support):
+                print("Te recomendamos los siguientes juegos con Soporte para Mandos:")
+            else:
+                print("Te recomendamos los siguientes juegos sin Soporte para Mandos:")
+            for juego in juegos:
+                print("-",juego)
+        else:
+            print("No hay juegos disponibles con Soporte para Mandos.")
+
 sistema = SistemaRecomendacion()
 sistema.reset()
 sistema.declare(Fact(price_range=50))  
@@ -350,4 +394,7 @@ sistema.declare(Fact(multiplatform=True))
 sistema.declare(Fact(achievements=True))
 sistema.declare(Fact(in_app_purchases=True))
 sistema.declare(Fact(steam_trading_cards=False))
+sistema.declare(Fact(min_ram=1))
+sistema.declare(Fact(min_storage=10))
+sistema.declare(Fact(controller_support=False))
 sistema.run()
