@@ -380,7 +380,24 @@ class SistemaRecomendacion(KnowledgeEngine):
                 print("-",juego)
         else:
             print("No hay juegos disponibles con Soporte para Mandos.")
-
+    #17
+    @Rule(Fact(categories=MATCH.categories))
+    def recommend_games_by_genre(self, categories):
+        juegos_recomendados = []
+        for juego in self.baseDatosJuegos():
+            appendbool = True
+            for item in categories:
+                if item not in juego["categories"]:
+                    appendbool =False
+            if appendbool:
+                juegos_recomendados.append(juego["name"])
+        if juegos_recomendados:
+            print("Te recomendamos los siguientes juegos con las categorias {}:".format(categories))
+            for juego in juegos_recomendados:
+                print("-", juego)
+        else:
+            print("Lo siento, no hay juegos disponibles con las categorias {}".format(categories))
+    
 sistema = SistemaRecomendacion()
 sistema.reset()
 sistema.declare(Fact(price_range=50))  
@@ -397,4 +414,5 @@ sistema.declare(Fact(steam_trading_cards=False))
 sistema.declare(Fact(min_ram=1))
 sistema.declare(Fact(min_storage=10))
 sistema.declare(Fact(controller_support=False))
+sistema.declare(Fact(categories=["Online PvP","Steam Achievements"]))
 sistema.run()
