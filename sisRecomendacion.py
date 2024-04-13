@@ -1044,9 +1044,52 @@ class SistemaRecomendacion(KnowledgeEngine):
                 print("-",juego)
         else:
             print("No hay juegos para ESRB 18 o menos")
-sistema = SistemaRecomendacion()
+
+    @Rule(Fact(achievements=MATCH.achievements))
+    def recomendarCompleto(self,min_ram,min_storage,price_range,genres,categories,singleplayer,online_multiplayer,release_date,user_rating,multiplatform,achievements,steam_workshop,in_app_purchases,active_community_market,remote_play,languages,steam_trading_cards,controller_support):
+        juegoMayor = None
+        puntajeJuegoMayor = 0
+        for juego in self.baseDatosJuegos():
+            puntajeActual = 0
+            if juego["min_storage"] < float(min_storage) and juego["min_ram"] < float(min_ram):
+                puntajeActual+=5
+                for genero in genres:
+                    if genero in juego["genres"]:
+                        puntajeActual +=5
+                    else:
+                        puntajeActual -=2
+                for category in categories:
+                    if category in juego["categories"]:
+                        puntajeActual +=3
+                    else:
+                        puntajeActual -=2
+                for language in languages:
+                    if language in juego["languages"]:
+                        puntajeActual +=2
+                if juego["price_range"] < float(price_range):
+                    puntajeActual += 3
+                if juego["user_rating"] > float(user_rating):
+                    puntajeActual +=3
+                if juego["singleplayer"] == singleplayer : puntajeActual +=1
+                if juego["online_multiplayer"] == online_multiplayer : puntajeActual +=1
+                if juego["multiplatform"] == multiplatform : puntajeActual +=1
+                if juego["achievements"] == achievements : puntajeActual +=1
+                if juego["steam_workshop"] == steam_workshop : puntajeActual +=1
+                if juego["in_app_purchases"] == in_app_purchases : puntajeActual +=1
+                if juego["active_community_market"] == active_community_market : puntajeActual +=1
+                if juego["remote_play"] == remote_play : puntajeActual +=1
+                if juego["steam_trading_cards"] == steam_trading_cards : puntajeActual +=1
+                if juego["controller_support"] == controller_support : puntajeActual +=1
+            else:
+                pass
+            if (puntajeActual > puntajeJuegoMayor):
+                juegoMayor = juego
+                puntajeJuegoMayor = puntajeActual
+        return [juegoMayor, puntajeJuegoMayor]
+    
+"""sistema = SistemaRecomendacion()
 sistema.reset()
-"""sistema.declare(Fact(price_range=50))  
+sistema.declare(Fact(price_range=50))  
 sistema.declare(Fact(genres=["Single-player","Multiplayer"]))
 sistema.declare(Fact(languages=["Spanish","Italian"]))
 sistema.declare(Fact(singleplayer=False))
@@ -1061,6 +1104,6 @@ sistema.declare(Fact(min_ram=1))
 sistema.declare(Fact(min_storage=10))
 sistema.declare(Fact(controller_support=False))
 sistema.declare(Fact(categories=["Online PvP","Steam Achievements"]))
-sistema.declare(Fact(min_ram=4,min_storage=20))"""
+sistema.declare(Fact(min_ram=4,min_storage=20))
 sistema.declare(Fact(min_ram=4,min_storage=20,price_range=30,genres=["Zombies","Singleplayer"],categories=["Online PvP"]))
-sistema.run()
+sistema.run()"""
