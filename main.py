@@ -1,4 +1,4 @@
-from tkinter import ttk
+from tkinter import messagebox
 import tkinter as tk
 from tkcalendar import DateEntry
 from sisRecomendacion import SistemaRecomendacion, Fact
@@ -39,30 +39,12 @@ def obtener_datos():
     genres = [genre for genre, var in genre_vars.items() if var.get()]
     categories = [category for category, var in category_vars.items() if var.get()]
     languages = [language for language, var in language_vars.items() if var.get()]
-    print("min_ram:", min_ram)
-    print("min_storage:", min_storage)
-    print("price_range:", price_range)
-    print("genres:", genres)
-    print("categories:", categories)
-    print("singleplayer:", singleplayer)
-    print("online_multiplayer:", online_multiplayer)
-    print("release_date:", release_date)
-    print("user_rating:", user_rating)
-    print("multiplatform:", multiplatform)
-    print("achievements:", achievements)
-    print("steam_workshop:", steam_workshop)
-    print("in_app_purchases:", in_app_purchases)
-    print("active_community_market:", active_community_market)
-    print("remote_play:", remote_play)
-    print("languages:", languages)
-    print("steam_trading_cards:", steam_trading_cards)
-    print("controller_support:", controller_support)
 
     sr = SistemaRecomendacion()
     sr.reset()
     recomendacion = sr.recomendarCompleto(min_ram,min_storage,price_range,genres,categories,singleplayer,online_multiplayer,release_date,user_rating,multiplatform,achievements,steam_workshop,in_app_purchases,active_community_market,remote_play,languages,steam_trading_cards,controller_support)
-    print(recomendacion)
-    sr.run() 
+    sr.run()
+    return recomendacion
 
 
 root = tk.Tk()
@@ -198,11 +180,32 @@ for language in idiomas:
     cb = tk.Checkbutton(language_frame, text=language, variable=var, onvalue=True, offvalue=False)
     cb.pack(anchor="w")
 
+def mostrar_ventana_emergente():
+    ventana_emergente = tk.Toplevel(root)
+    ventana_emergente.title("Reconmendación")
+    ventana_emergente.geometry("1500x200")
+    ventana_emergente.resizable(False, False)
+    mensaje1 = tk.Label(ventana_emergente, text="Nombre: " + obtener_datos()[0]["name"])
+    mensaje1.pack(pady=1)
+    mensaje2 = tk.Label(ventana_emergente, text="Precio: " + str(obtener_datos()[0]["price_range"]))
+    mensaje2.pack(pady=1)
+    mensaje3 = tk.Label(ventana_emergente, text="Genero: " + str(obtener_datos()[0]["genres"]))
+    mensaje3.pack(pady=1)
+    mensaje4 = tk.Label(ventana_emergente, text="Categoria: " + str(obtener_datos()[0]["categories"]))
+    mensaje4.pack(pady=1)
+    mensaje5 = tk.Label(ventana_emergente, text="Fecha de Lanzamiento: " + obtener_datos()[0]["release_date"])
+    mensaje5.pack(pady=1)
+    mensaje5 = tk.Label(ventana_emergente, text="Lenguajes: " + str(obtener_datos()[0]["languages"]))
+    mensaje5.pack(pady=1)
+    mensaje5 = tk.Label(ventana_emergente, text="Memoria Ram Minima: " + str(obtener_datos()[0]["min_ram"]) + " GB")
+    mensaje5.pack(pady=1)
+    boton_cerrar = tk.Button(ventana_emergente, text="Cerrar", command=ventana_emergente.destroy)
+    boton_cerrar.pack()
+
+tk.Button(root, text='Recomendar', command=mostrar_ventana_emergente).grid(row=8, columnspan=2, pady=4)
 
 
 
-
-tk.Button(root, text='Recomendar', command=obtener_datos).grid(row=8, columnspan=2, pady=4)
 root.mainloop()
 
 
